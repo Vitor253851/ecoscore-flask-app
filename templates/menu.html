@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Menu Principal{% endblock %}
+
+{% block content %}
+    <h2>Bem-vindo(a), {{ usuario }}!</h2>
+    <p style="text-align: center;">O que você gostaria de fazer hoje?</p>
+    <br>
+    <a href="{{ url_for('registro') }}" class="btn" style="background-color: #3498db; margin-bottom: 10px;">Preencher Hábitos de Hoje</a>
+    <a href="{{ url_for('desempenho') }}" class="btn" style="background-color: #9b59b6; margin-bottom: 10px;">Ver Meu Desempenho</a>
+    <a href="{{ url_for('dicas') }}" class="btn" style="background-color: #e67e22; margin-bottom: 10px;">Ver Dicas Sustentáveis</a>
+    <a href="{{ url_for('logout') }}" class="btn" style="background-color: #7f8c8d;">Sair / Logout</a>
+{% endblock %}

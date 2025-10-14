@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Meu Desempenho{% endblock %}
+
+{% block content %}
+    <h2>Meu Desempenho</h2>
+
+    {% if dados %}
+        <div class="summary">
+            <div class="summary-item">
+                <span>Pontuação Total</span>
+                <strong>{{ '%+d'|format(dados.pontuacao_total) }}</strong>
+            </div>
+            <div class="summary-item">
+                <span>Média Diária (EcoScore)</span>
+                <strong>{{ '%.2f'|format(dados.media_diaria) }}</strong>
+            </div>
+        </div>
+
+        <h3>Evolução da Pontuação (Últimos 30 dias)</h3>
+        <div style="margin-bottom: 30px;">
+            <canvas id="performanceChart"></canvas>
+        </div>
+        <h3>Últimos 5 Registros</h3>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Pontuação do Dia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in dados.historico_recente|reverse %}
+                <tr>
+                    <td>{{ registro.data }}</td>
+                    <td>{{ '%+d'|format(registro.pontuacao) }} pts</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="flash info">Você ainda não possui registros. Preencha o formulário de hábitos para começar!</div>
+    {% endif %}
+    <br>
+    <a href="{{ url_for('menu') }}" class="btn" style="background-color: #7f8c8d;">Voltar ao Menu</a>
+
+    {% if dados and dados.chart_labels %}
+    <!-- 1. Inclui a biblioteca Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- 2. Script para configurar e renderizar o gráfico -->
+    <script>
+        const ctx = document.getElementById('performanceChart');
+
+        new Chart(ctx, {
+            type: 'line', // Tipo do gráfico (linha)
+            data: {
+                // Passa os dados do Flask para o JavaScript de forma segura
+                labels: {{ dados.chart_labels|tojson }},
+                datasets: [{
+                    label: 'Pontuação Diária',
+                    data: {{ dados.chart_data|tojson }},
+                    fill: true,
+                    borderColor: 'rgb(39, 174, 96)',
+                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false // Permite que o eixo Y comece abaixo de zero
+                    }
+                },
+                plugins: {
+                    legend: { display: false } // Oculta a legenda para um visual mais limpo
+                }
+            }
+        });
+    </script>
+    {% endif %}
+{% endblock %}

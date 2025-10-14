@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de Hábitos{% endblock %}
+
+{% block content %}
+    <h2>Formulário EcoScore de Hoje</h2>
+
+    {% if ja_registrou %}
+        <div class="flash info">
+            Você já preencheu o formulário de hoje. Volte amanhã para registrar novos hábitos!
+        </div>
+        <br>
+    {% else %}
+        <p style="text-align: center;">Preencha seus hábitos de hoje para receber sua pontuação.</p>
+        <form method="POST">
+            {% for categoria, opcoes in categorias.items() %}
+            <div class="form-group">
+                <label for="{{ categoria.lower() }}">{{ categoria.title() }}</label>
+                <select name="{{ categoria.lower() }}" id="{{ categoria.lower() }}" class="form-group input" required>
+                    <option value="" disabled selected>Selecione uma opção...</option>
+                    {% for opcao, pontos in opcoes.items() %}
+                        <option value="{{ opcao }}">{{ opcao }} ({{ '%+d'|format(pontos) }} pts)</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn">Salvar Registro</button>
+        </form>
+    {% endif %}
+    <a href="{{ url_for('menu') }}" class="btn" style="background-color: #7f8c8d; margin-top: 10px;">Voltar ao Menu</a>
+{% endblock %}
